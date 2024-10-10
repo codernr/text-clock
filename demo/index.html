@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Clock Demo</title>
+    <style>
+        #clock {
+            display: flex;
+            flex-wrap: wrap;
+            width: 720px;
+        }
+        #clock > div {
+            background: black;
+            color: indigo;
+            text-transform: uppercase;
+            font-family: arial;
+            font-size: x-large;
+            font-weight: bold;
+            flex: 0 0 60px;
+            box-sizing: border-box;
+            padding: 5px;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .subscript {
+            vertical-align: sub;
+            font-size: x-small;
+            font-weight: normal;
+        }
+    </style>
+</head>
+
+<body>
+    <template id="char-template">
+        <div><div><span class="char"></span><span class="subscript"></span></div></div>
+    </template>
+    <div id="time"></div>
+    <div id="clock"></div>
+    <div id="debug"></div>
+    <script>
+
+        const hourRule = (hour) => (h, m) => (h % 12 === hour - 1 && m > 7) || (h % 12 === hour && m < 8);
+
+        const minuteRule = (min) => (h, m) => m % 15 === min || m % 15 === 15 - min;
+
+        const rules = {
+            m: [
+                undefined,
+                minuteRule(1),
+                minuteRule(2),
+                minuteRule(3),
+                minuteRule(4),
+                minuteRule(5),
+                minuteRule(6),
+                minuteRule(7),
+            ],
+            h: [
+                undefined,
+                hourRule(1),
+                hourRule(2),
+                hourRule(3),
+                hourRule(4),
+                hourRule(5),
+                hourRule(6),
+                hourRule(7),
+                hourRule(8),
+                hourRule(9),
+                hourRule(10),
+                hourRule(11),
+                (h, m) => h % 12 === 11 && m > 7 && m < 53
+            ],
+            w: {
+                noon: (h, m) => (h === 11 && m > 52) || (h === 12 && m < 8),
+                midnight: (h, m) => (h === 23 && m > 52) || (h === 0 && m < 8),
+                hour: (h, m) => (h !== 11 && h !== 23 && m > 52) || (h !== 0 && h !== 12 && m < 8),
+                minute: (h, m) => m % 15 !== 0,
+                quarterPrefix: (h, m) => m > 37 && m < 53,
+                quarter: (h, m) => m % 30 > 7 && m % 30 < 23,
+                half: (h, m) => m > 22 && m < 38,
+                past: (h, m) => (m % 15 > 0 && m % 15 < 8),
+                to: (h, m) => (m % 15 > 7 && m % 15 !== 0), 
+            },
+            x: (h, m) => false
+        }
+
+        const word = (text, rule) => text.split('').map(c => ({ c, r: rule }));
+
+        const matrix = [
+            [...word('egy', rules.m[1]), ...word('dsn', rules.x), ...word('kettő', rules.m[2]), ...word('e', rules.x)],
+            [...word('három', rules.m[3]), ...word('slc', rules.x), ...word('négy', rules.m[4])],
+            [...word('öt', rules.m[5]), ...word('us', rules.x), ...word('hat', rules.m[6]), ...word('vs', rules.x), ...word('hét', rules.m[7])],
+            [...word('perc', rules.w.minute), ...word('cel', rules.w.past), ...word('r', rules.x), ...word('múlt', rules.w.past)],
+            [...word('mw', rules.x), ...word('múlva', rules.w.to), ...word('ex', rules.x), ...word('fél', rules.w.half)],
+            [...word('három', rules.w.quarterPrefix), ...word('negyed', rules.w.quarter), ...word('q', rules.x)],
+            [...word('egy', rules.h[1]), ...word('kettő', rules.h[2]), ...word('g', rules.x), ...word('hat', rules.h[6])],
+            [...word('három', rules.h[3]), ...word('négy', rules.h[4]), ...word('hét', rules.h[7])],
+            [...word('nyolc', rules.h[8]), ...word('y', rules.x), ...word('kilenc', rules.h[9])],
+            [...word('tíz', rules.h[10]), ...word('i', rules.x), ...word('tizenegy', rules.h[11])],
+            [...word('tizenkettő', rules.h[12]), ...word('öt', rules.h[5])],
+            [...word('dél', rules.w.noon), ...word('éjfél', rules.w.midnight), ...word('k', rules.x), ...word('óra', rules.w.hour)]
+        ]
+
+        const rows = matrix.length;
+        const cols = matrix[0].length;
+
+        const offset = 0;
+        const getIndex = (r, c) => (rows - r - 1) * cols + (r % 2 === 0 ? c : cols - c - 1) + offset;
+
+        const template = document.getElementById('char-template');
+        const clockElement = document.getElementById('clock');
+        const debugElement = document.getElementById('debug');
+
+        for (let row = 0; row < rows; row++) {
+            for (let col = 0; col < cols; col++) {
+                const clone = document.importNode(template.content, true);
+                clone.querySelector('span.char').textContent = matrix[row][col].c;
+                clone.querySelector('span.subscript').textContent = getIndex(row, col);
+
+                clockElement.appendChild(clone);
+                matrix[row][col].element = clockElement.lastElementChild;
+            }
+        }
+
+        const t = {
+            h: 0,
+            m: 0,
+            full: false,
+            el: document.getElementById('time'),
+            increment: function() {
+                this.m++;
+                if (this.m === 60) {
+                    this.m = 0;
+                    this.h++;
+                    if (this.h === 24) {
+                        this.h = 0;
+                        this.full = true;
+                    }
+                }
+            },
+            display: function() {
+                this.el.textContent = `${this.h.toString().padStart(2, '0')}:${this.m.toString().padStart(2, '0')}`;
+            }
+        }
+
+        setInterval(() => {
+            t.display();
+            let str = '';
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    const active = matrix[row][col].r(t.h, t.m);
+                    matrix[row][col].element.style.color = active ? 'white' : 'indigo';
+                    str += active ? matrix[row][col].c : ' ';
+                }
+            }
+            if (!t.full) {
+                debugElement.appendChild(document.createTextNode(str));
+                debugElement.appendChild(document.createElement('br'));
+            }
+            t.increment();
+        }, 1000);
+
+    </script>
+</body>
+
+</html>
