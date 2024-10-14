@@ -1,10 +1,18 @@
 #include <Arduino.h>
 #include <FastLED.h>
 #include "config.h"
-#include "words.h"
+
+#define TESTING
 
 CRGB leds[NUM_LEDS];
-Words words;
+
+#ifndef TESTING
+#include "words.h"
+Words program;
+#else
+#include "iterator.h"
+Iterator program;
+#endif
 
 void setup() {
   Serial.begin(9600);
@@ -14,6 +22,6 @@ void setup() {
 }
 
 void loop() {
-  words.update();
+  program.update();
   FastLED.show();
 }
