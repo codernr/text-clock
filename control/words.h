@@ -9,32 +9,31 @@
 #define INTERVAL 1000
 
 extern CRGB leds[NUM_LEDS];
-extern RTC_DS3231 rtc;
 
 class Words {
 public:
-    Words();
+    Words(Timer& timer);
+    void init();
     void update();
 
 private:
-    uint8_t previousMinutes;
-
+    Timer& timer;
     inline bool minuteActive(const uint8_t minute, const uint8_t m) __attribute__((always_inline));
     inline bool hourActive(const uint8_t hour, const uint8_t h, const uint8_t m) __attribute__((always_inline));
     void setPixels(const uint8_t h, const uint8_t m);
 };
 
-Words::Words() : previousMinutes(0) {}
+Words::Words(Timer& timer) : timer(timer) {}
+
+void Words::init()
+{
+    timer.init();
+}
 
 void Words::update() {
-    DateTime now = rtc.now();
-    uint8_t m = now.minute();
-
-    if (m != previousMinutes) {
-        previousMinutes = m;
-        
-        setPixels(now.hour(), m);
-    }
+    if (!timer.tick()) return;
+    
+    setPixels(timer.hour(), timer.minute());
 }
 
 void Words::setPixels(const uint8_t h, const uint8_t m) {

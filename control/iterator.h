@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <FastLED.h>
 #include "config.h"
+#include "timer.h"
 
 #define INTERVAL 300
 
@@ -11,21 +12,25 @@ extern CRGB leds[NUM_LEDS];
 
 class Iterator {
 public:
-    Iterator();
+    Iterator(Timer& timer);
+    void init();
     void update();
 
 private:
-    unsigned long previousMillis;
+    Timer& timer;
     uint8_t i;
 };
 
-Iterator::Iterator() : previousMillis(0UL), i(0) {}
+Iterator::Iterator(Timer& timer) : timer(timer), i(0) {}
+
+void Iterator::init()
+{
+    timer.init();
+}
 
 void Iterator::update()
 {
-    unsigned long currentMillis = millis();
-    if (currentMillis - previousMillis < INTERVAL) return;
-    previousMillis = currentMillis;
+    if (!timer.tick()) return;
 
     FastLED.clear();
     leds[i] = CRGB::Blue;

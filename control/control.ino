@@ -3,17 +3,25 @@
 #include "RTClib.h"
 #include "config.h"
 
-#define TESTING
+// #define ITERATOR
+#define USE_RTC
 
 CRGB leds[NUM_LEDS];
-RTC_DS3231 rtc;
 
-#ifndef TESTING
+#ifndef USE_RTC
+#include "debugtimer.h"
+DebugTimer timer;
+#else
+#include "rtctimer.h"
+RTCTimer timer;
+#endif
+
+#ifndef ITERATOR
 #include "words.h"
-Words program;
+Words program(timer);
 #else
 #include "iterator.h"
-Iterator program;
+Iterator program(timer);
 #endif
 
 void setup() {
@@ -21,9 +29,7 @@ void setup() {
 
   delay( 3000 ); // power-up safety delay
 
-  if (rtc.lostPower()) {
-    rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-  }
+  program.init();
   
   FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
   FastLED.setBrightness(  BRIGHTNESS );
