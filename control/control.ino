@@ -4,6 +4,7 @@
 #include "words.h"
 
 CRGB leds[NUM_LEDS];
+Words words;
 
 void setup() {
   Serial.begin(9600);
@@ -13,6 +14,6 @@ void setup() {
 }
 
 void loop() {
-  updateWords();
+  words.update();
   FastLED.show();
 }

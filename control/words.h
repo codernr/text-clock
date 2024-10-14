@@ -7,22 +7,28 @@
 
 #define INTERVAL 1000
 
-extern CRGB leds[];
+extern CRGB leds[NUM_LEDS];
 
-unsigned long previousMillis = 0UL;
-uint8_t m = 0;
-uint8_t h = 0;
+class Words {
+public:
+    Words();
+    void update();
 
-inline bool minuteActive(const uint8_t minute, const uint8_t m) __attribute__((always_inline));
-inline bool hourActive(const uint8_t hour, const uint8_t h, const uint8_t m) __attribute__((always_inline));
-void updateWords();
-void setPixels();
+private:
+    unsigned long previousMillis;
+    uint8_t m;
+    uint8_t h;
 
-void updateWords()
-{
+    inline bool minuteActive(const uint8_t minute, const uint8_t m) __attribute__((always_inline));
+    inline bool hourActive(const uint8_t hour, const uint8_t h, const uint8_t m) __attribute__((always_inline));
+    void setPixels();
+};
+
+Words::Words() : previousMillis(0UL), m(0), h(0) {}
+
+void Words::update() {
     unsigned long currentMillis = millis();
-    if (currentMillis - previousMillis >= INTERVAL)
-    {
+    if (currentMillis - previousMillis >= INTERVAL) {
         previousMillis = currentMillis;
         
         m = (m + 1) % 60;
@@ -33,10 +39,8 @@ void updateWords()
     }
 }
 
-void setPixels()
-{
-    for (uint8_t i = 0; i < NUM_LEDS; i++)
-    {
+void Words::setPixels() {
+    for (uint8_t i = 0; i < NUM_LEDS; i++) {
         if (
             (i > 131 && i < 135 && minuteActive(1, m)) ||
             (i > 137 && i < 143 && minuteActive(2, m)) ||
@@ -68,7 +72,7 @@ void setPixels()
             (i > 11 && i < 24 && hourActive(12, h, m)) ||
 
             (i > 8 && i < 12 && ((h == 11 && m > 52) || (h == 12 && m < 8))) ||
-            (i > 3 &&i < 9 && ((h == 23 && m > 52) || (h == 0 && m < 8))) ||
+            (i > 3 && i < 9 && ((h == 23 && m > 52) || (h == 0 && m < 8))) ||
             (i >=0 && i < 4 && ((h != 11 && h != 23 && m > 53) || (h != 0 && h != 12 && m < 8)))
         )
         leds[i] = CRGB::Blue;
@@ -77,13 +81,11 @@ void setPixels()
     }
 }
 
-bool minuteActive(const uint8_t minute, const uint8_t m)
-{
+bool Words::minuteActive(const uint8_t minute, const uint8_t m) {
     return m % 15 == minute || m % 15 == 15 - minute;
 }
 
-bool hourActive(const uint8_t hour, const uint8_t h, const uint8_t m)
-{
+bool Words::hourActive(const uint8_t hour, const uint8_t h, const uint8_t m) {
     return (h % 12 == hour - 1 && m > 7) || (h % 12 == hour && m < 8);
 }
 
