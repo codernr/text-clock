@@ -4,15 +4,8 @@
 #include <Arduino.h>
 #include <FastLED.h>
 
-bool minuteActive(const uint8_t minute, const uint8_t m)
-{
-    return m % 15 == minute || m % 15 == 15 - minute;
-}
-
-bool hourActive(const uint8_t hour, const uint8_t h, const uint8_t m)
-{
-    return (h % 12 == hour - 1 && m > 7) || (h % 12 == hour && m < 8);
-}
+inline bool minuteActive(const uint8_t minute, const uint8_t m) __attribute__((always_inline));
+inline bool hourActive(const uint8_t hour, const uint8_t h, const uint8_t m) __attribute__((always_inline));
 
 CRGB getPixel(const uint8_t i, const uint8_t h, const uint8_t m)
 {
@@ -53,6 +46,16 @@ CRGB getPixel(const uint8_t i, const uint8_t h, const uint8_t m)
     return CRGB::Blue;
 
     return CRGB::Black;
+}
+
+bool minuteActive(const uint8_t minute, const uint8_t m)
+{
+    return m % 15 == minute || m % 15 == 15 - minute;
+}
+
+bool hourActive(const uint8_t hour, const uint8_t h, const uint8_t m)
+{
+    return (h % 12 == hour - 1 && m > 7) || (h % 12 == hour && m < 8);
 }
 
 #endif // RULES_H
