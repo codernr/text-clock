@@ -3,11 +3,13 @@
 
 #include <Arduino.h>
 #include <FastLED.h>
+#include "RTClib.h"
 #include "config.h"
 
 #define INTERVAL 1000
 
 extern CRGB leds[NUM_LEDS];
+extern RTC_DS3231 rtc;
 
 class Words {
 public:
@@ -15,31 +17,27 @@ public:
     void update();
 
 private:
-    unsigned long previousMillis;
-    uint8_t m;
-    uint8_t h;
+    uint8_t previousMinutes;
 
     inline bool minuteActive(const uint8_t minute, const uint8_t m) __attribute__((always_inline));
     inline bool hourActive(const uint8_t hour, const uint8_t h, const uint8_t m) __attribute__((always_inline));
-    void setPixels();
+    void setPixels(const uint8_t h, const uint8_t m);
 };
 
-Words::Words() : previousMillis(0UL), m(0), h(0) {}
+Words::Words() : previousMinutes(0) {}
 
 void Words::update() {
-    unsigned long currentMillis = millis();
-    if (currentMillis - previousMillis >= INTERVAL) {
-        previousMillis = currentMillis;
+    DateTime now = rtc.now();
+    uint8_t m = now.minute();
+
+    if (m != previousMinutes) {
+        previousMinutes = m;
         
-        m = (m + 1) % 60;
-
-        if (m == 0) h = (h + 1) % 24;
-
-        setPixels();
+        setPixels(now.hour(), m);
     }
 }
 
-void Words::setPixels() {
+void Words::setPixels(const uint8_t h, const uint8_t m) {
     for (uint8_t i = 0; i < NUM_LEDS; i++) {
         if (
             (i > 131 && i < 135 && minuteActive(1, m)) ||
