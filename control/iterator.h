@@ -5,7 +5,7 @@
 #include <FastLED.h>
 #include "config.h"
 
-#define INTERVAL 200
+#define INTERVAL 300
 
 extern CRGB leds[NUM_LEDS];
 
@@ -25,6 +25,7 @@ void Iterator::update()
 {
     unsigned long currentMillis = millis();
     if (currentMillis - previousMillis < INTERVAL) return;
+    previousMillis = currentMillis;
 
     FastLED.clear();
     leds[i] = CRGB::Blue;
