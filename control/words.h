@@ -4,8 +4,6 @@
 #include <Arduino.h>
 #include <FastLED.h>
 
-extern CRGB color;
-
 bool minuteActive(const uint8_t minute, const uint8_t m)
 {
     return m % 15 == minute || m % 15 == 15 - minute;
