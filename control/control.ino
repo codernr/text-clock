@@ -16,35 +16,35 @@ uint8_t minutes;
 uint8_t hours;
 
 Word* words[] = {
-  new MinuteWord(1, String("egy"), 132, leds),
-  new MinuteWord(2, String("ketto"), 138, leds),
-  new MinuteWord(3, String("harom"), 127, leds),
-  new MinuteWord(4, String("negy"), 120, leds),
-  new MinuteWord(5, String("ot"), 108, leds),
-  new MinuteWord(6, String("hat"), 112, leds),
-  new MinuteWord(7, String("het"), 117, leds),
-  new MinuteTextWord(String("perc"), 104, leds),
-  new PastWord(String("cel"), 101, leds),
-  new PastWord(String("mult"), 96, leds),
-  new ToWord(String("mulva"), 86, leds),
-  new HalfWord(String("fel"), 93, leds),
-  new QuarterPrefixWord(String("harom"), 79, leds),
-  new QuarterWord(String("negyed"), 73, leds),
-  new HourWord(1, String("egy"), 60, leds),
-  new HourWord(2, String("ketto"), 64, leds),
-  new HourWord(3, String("harom"), 55, leds),
-  new HourWord(4, String("negy"), 51, leds),
-  new HourWord(5, String("ot"), 22, leds),
-  new HourWord(6, String("hat"), 69, leds),
-  new HourWord(7, String("het"), 48, leds),
-  new HourWord(8, String("nyolc"), 36, leds),
-  new HourWord(9, String("kilenc"), 42, leds),
-  new HourWord(10, String("tiz"), 33, leds),
-  new HourWord(11, String("tizenegy"), 24, leds),
-  new HourWord(12, String("tizenketto"), 12, leds),
-  new NoonWord(String("del"), 9, leds),
-  new MidnightWord(String("ejfel"), 4, leds),
-  new HourTextWord(String("ora"), 0, leds),
+  new MinuteWord(1, 132, 3, leds), // "egy" has length 3
+  new MinuteWord(2, 138, 5, leds), // "ketto" has length 5
+  new MinuteWord(3, 127, 5, leds), // "harom" has length 5
+  new MinuteWord(4, 120, 4, leds), // "negy" has length 4
+  new MinuteWord(5, 108, 2, leds), // "ot" has length 2
+  new MinuteWord(6, 112, 3, leds), // "hat" has length 3
+  new MinuteWord(7, 117, 3, leds), // "het" has length 3
+  new MinuteTextWord(104, 4, leds), // "perc" has length 4
+  new PastWord(101, 3, leds), // "cel" has length 3
+  new PastWord(96, 4, leds), // "mult" has length 4
+  new ToWord(86, 5, leds), // "mulva" has length 5
+  new HalfWord(93, 3, leds), // "fel" has length 3
+  new QuarterPrefixWord(79, 5, leds), // "harom" has length 5
+  new QuarterWord(73, 6, leds), // "negyed" has length 6
+  new HourWord(1, 60, 3, leds), // "egy" has length 3
+  new HourWord(2, 64, 5, leds), // "ketto" has length 5
+  new HourWord(3, 55, 5, leds), // "harom" has length 5
+  new HourWord(4, 51, 4, leds), // "negy" has length 4
+  new HourWord(5, 22, 2, leds), // "ot" has length 2
+  new HourWord(6, 69, 3, leds), // "hat" has length 3
+  new HourWord(7, 48, 3, leds), // "het" has length 3
+  new HourWord(8, 36, 5, leds), // "nyolc" has length 5
+  new HourWord(9, 42, 6, leds), // "kilenc" has length 6
+  new HourWord(10, 33, 3, leds), // "tiz" has length 3
+  new HourWord(11, 24, 8, leds), // "tizenegy" has length 8
+  new HourWord(12, 12, 10, leds), // "tizenketto" has length 10
+  new NoonWord(9, 3, leds), // "del" has length 3
+  new MidnightWord(4, 5, leds), // "ejfel" has length 5
+  new HourTextWord(0, 3, leds), // "ora" has length 3
 };
 
 void setup() {

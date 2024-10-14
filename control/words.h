@@ -1,16 +1,14 @@
 #ifndef RULES_H
 #define RULES_H
 
-#include <stdint.h>
-
 #include <Arduino.h>
 #include <FastLED.h>
 
 class Word
 {
 public:
-    Word(const String &content, uint8_t start, CRGB *leds)
-        : content(content), length(static_cast<uint8_t>(content.length())), start(start), leds(leds) {}
+    Word(uint8_t start, uint8_t length, CRGB* leds)
+        : content(content), length(length), start(start), leds(leds) {}
     
     virtual bool isActive(uint8_t h, uint8_t m) const = 0;
     
@@ -38,8 +36,8 @@ protected:
 class MinuteWord : public Word
 {
 public:
-    MinuteWord(uint8_t minute, const String &content, uint8_t start, CRGB *leds)
-        : Word(content, start, leds), minute_(minute) {}
+    MinuteWord(uint8_t minute, uint8_t start, uint8_t length, CRGB* leds)
+        : Word(start, length, leds), minute_(minute) {}
 
     bool isActive(uint8_t h, uint8_t m) const override
     {
@@ -53,8 +51,8 @@ private:
 class HourWord : public Word
 {
 public:
-    HourWord(uint8_t hour, const String &content, uint8_t start, CRGB *leds)
-        : Word(content, start, leds), hour_(hour) {}
+    HourWord(uint8_t hour, uint8_t start, uint8_t length, CRGB* leds)
+        : Word(start, length, leds), hour_(hour) {}
 
     bool isActive(uint8_t h, uint8_t m) const override
     {
@@ -68,8 +66,8 @@ private:
 class NoonWord : public Word
 {
 public:
-    NoonWord(const String &content, uint8_t start, CRGB *leds)
-        : Word(content, start, leds) {}
+    NoonWord(uint8_t start, uint8_t length, CRGB* leds)
+        : Word(start, length, leds) {}
 
     bool isActive(uint8_t h, uint8_t m) const override
     {
@@ -80,8 +78,8 @@ public:
 class MidnightWord : public Word
 {
 public:
-    MidnightWord(const String &content, uint8_t start, CRGB *leds)
-        : Word(content, start, leds) {}
+    MidnightWord(uint8_t start, uint8_t length, CRGB* leds)
+        : Word(start, length, leds) {}
 
     bool isActive(uint8_t h, uint8_t m) const override
     {
@@ -92,8 +90,8 @@ public:
 class HourTextWord : public Word
 {
 public:
-    HourTextWord(const String &content, uint8_t start, CRGB *leds)
-        : Word(content, start, leds) {}
+    HourTextWord(uint8_t start, uint8_t length, CRGB* leds)
+        : Word(start, length, leds) {}
 
     bool isActive(uint8_t h, uint8_t m) const override
     {
@@ -104,8 +102,8 @@ public:
 class MinuteTextWord : public Word
 {
 public:
-    MinuteTextWord(const String &content, uint8_t start, CRGB *leds)
-        : Word(content, start, leds) {}
+    MinuteTextWord(uint8_t start, uint8_t length, CRGB* leds)
+        : Word(start, length, leds) {}
 
     bool isActive(uint8_t h, uint8_t m) const override
     {
@@ -116,8 +114,8 @@ public:
 class QuarterPrefixWord : public Word
 {
 public:
-    QuarterPrefixWord(const String &content, uint8_t start, CRGB *leds)
-        : Word(content, start, leds) {}
+    QuarterPrefixWord(uint8_t start, uint8_t length, CRGB* leds)
+        : Word(start, length, leds) {}
 
     bool isActive(uint8_t h, uint8_t m) const override
     {
@@ -128,8 +126,8 @@ public:
 class QuarterWord : public Word
 {
 public:
-    QuarterWord(const String &content, uint8_t start, CRGB *leds)
-        : Word(content, start, leds) {}
+    QuarterWord(uint8_t start, uint8_t length, CRGB* leds)
+        : Word(start, length, leds) {}
 
     bool isActive(uint8_t h, uint8_t m) const override
     {
@@ -140,8 +138,8 @@ public:
 class HalfWord : public Word
 {
 public:
-    HalfWord(const String &content, uint8_t start, CRGB *leds)
-        : Word(content, start, leds) {}
+    HalfWord(uint8_t start, uint8_t length, CRGB* leds)
+        : Word(start, length, leds) {}
 
     bool isActive(uint8_t h, uint8_t m) const override
     {
@@ -152,8 +150,8 @@ public:
 class PastWord : public Word
 {
 public:
-    PastWord(const String &content, uint8_t start, CRGB *leds)
-        : Word(content, start, leds) {}
+    PastWord(uint8_t start, uint8_t length, CRGB* leds)
+        : Word(start, length, leds) {}
 
     bool isActive(uint8_t h, uint8_t m) const override
     {
@@ -164,8 +162,8 @@ public:
 class ToWord : public Word
 {
 public:
-    ToWord(const String &content, uint8_t start, CRGB *leds)
-        : Word(content, start, leds) {}
+    ToWord(uint8_t start, uint8_t length, CRGB* leds)
+        : Word(start, length, leds) {}
 
     bool isActive(uint8_t h, uint8_t m) const override
     {
