@@ -56,7 +56,7 @@ void Words::setPixels(const uint8_t h, const uint8_t m) {
             (i > 72 && i < 79 && m % 30 > 7 && m % 30 < 23) ||
 
             (i > 59 && i < 63 && hourActive(1, h, m)) ||
-            (i > 63 && i < 69 && hourActive(2, h, m)) ||
+            (i > 62 && i < 68 && hourActive(2, h, m)) ||
             (i > 54 && i < 60 && hourActive(3, h, m)) ||
             (i > 50 && i < 55 && hourActive(4, h, m)) ||
             (i > 21 && i < 24 && hourActive(5, h, m)) ||
@@ -66,13 +66,13 @@ void Words::setPixels(const uint8_t h, const uint8_t m) {
             (i > 41 && i < 48 && hourActive(9, h, m)) ||
             (i > 32 && i < 36 && hourActive(10, h, m)) ||
             (i > 23 && i < 32 && hourActive(11, h, m)) ||
-            (i > 11 && i < 24 && hourActive(12, h, m)) ||
+            (i > 11 && i < 22 && hourActive(12, h, m)) ||
 
             (i > 8 && i < 12 && ((h == 11 && m > 52) || (h == 12 && m < 8))) ||
             (i > 3 && i < 9 && ((h == 23 && m > 52) || (h == 0 && m < 8))) ||
-            (i >=0 && i < 4 && ((h != 11 && h != 23 && m > 53) || (h != 0 && h != 12 && m < 8)))
+            (i >=0 && i < 3 && ((h != 11 && h != 23 && m > 53) || (h != 0 && h != 12 && m < 8)))
         )
-        leds[i] = CRGB::Blue;
+        leds[i] = CRGB::Lime;
 
         else leds[i] = CRGB::Black;
     }

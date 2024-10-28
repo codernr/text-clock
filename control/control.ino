@@ -4,7 +4,7 @@
 #include "config.h"
 
 // #define ITERATOR
-#define USE_RTC
+// #define USE_RTC
 
 CRGB leds[NUM_LEDS];
 

@@ -4,7 +4,7 @@
 #include <Arduino.h>
 #include "timer.h"
 
-#define INTERVAL 200
+#define INTERVAL 250
 
 class DebugTimer : public Timer
 {
