@@ -3,8 +3,8 @@
 #include "RTClib.h"
 #include "config.h"
 
-// #define ITERATOR
-// #define USE_RTC
+//#define ITERATOR
+#define USE_RTC
 
 CRGB leds[NUM_LEDS];
 
