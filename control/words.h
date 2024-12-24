@@ -6,9 +6,9 @@
 #include "RTClib.h"
 #include "config.h"
 
-#define INTERVAL 1000
-
 extern CRGB leds[NUM_LEDS];
+const CRGBPalette16 palette = RainbowColors_p;
+uint8_t paletteIndex = 0;
 
 class Words {
 public:
@@ -32,7 +32,8 @@ void Words::init()
 
 void Words::update() {
     if (!timer.tick()) return;
-    
+
+    paletteIndex++;
     setPixels(timer.hour(), timer.minute());
 }
 
@@ -66,13 +67,13 @@ void Words::setPixels(const uint8_t h, const uint8_t m) {
             (i > 41 && i < 48 && hourActive(9, h, m)) ||
             (i > 32 && i < 36 && hourActive(10, h, m)) ||
             (i > 23 && i < 32 && hourActive(11, h, m)) ||
-            (i > 11 && i < 22 && hourActive(12, h, m)) ||
+            (i > 11 && i < 22 && ((h == 11 || h == 23) && m <= 52 && m > 7))  ||
 
             (i > 8 && i < 12 && ((h == 11 && m > 52) || (h == 12 && m < 8))) ||
             (i > 3 && i < 9 && ((h == 23 && m > 52) || (h == 0 && m < 8))) ||
             (i >=0 && i < 3 && ((h != 11 && h != 23 && m > 53) || (h != 0 && h != 12 && m < 8)))
         )
-        leds[i] = CRGB::Lime;
+        leds[i].setHSV(paletteIndex, 255, 255);
 
         else leds[i] = CRGB::Black;
     }
