@@ -66,7 +66,7 @@ void Ducks::update(const DateTime now) {
         hour = now.hour();
         randomMinute = random(60);
     }
-Serial.println(randomMinute);
+    
     if (!(now.minute() == randomMinute && second == 45)) return;
 
     FastLED.clear();
