@@ -13,28 +13,28 @@ uint8_t paletteIndex = 0;
 class Words {
 public:
     Words(Timer& timer);
-    void init();
     void update();
 
 private:
     Timer& timer;
+    bool isSet;
     inline bool minuteActive(const uint8_t minute, const uint8_t m) __attribute__((always_inline));
     inline bool hourActive(const uint8_t hour, const uint8_t h, const uint8_t m) __attribute__((always_inline));
     void setPixels(const uint8_t h, const uint8_t m);
 };
 
-Words::Words(Timer& timer) : timer(timer) {}
-
-void Words::init()
-{
-    timer.init();
-}
+Words::Words(Timer& timer) : timer(timer), isSet(false) {}
 
 void Words::update() {
-    if (!timer.tick()) return;
-
-    paletteIndex++;
-    setPixels(timer.hour(), timer.minute());
+    if (timer.second() == 0 && !isSet) {
+        paletteIndex++;
+        setPixels(timer.hour(), timer.minute());
+        FastLED.show();
+        isSet = true;
+    }
+    if (timer.second() == 1) {
+        isSet = false;
+    }
 }
 
 void Words::setPixels(const uint8_t h, const uint8_t m) {

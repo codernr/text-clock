@@ -2,40 +2,28 @@
 #include <FastLED.h>
 #include "RTClib.h"
 #include "config.h"
-
-//#define ITERATOR
-#define USE_RTC
+#include "rtctimer.h"
+#include "words.h"
+#include "ducks.h"
 
 CRGB leds[NUM_LEDS];
-
-#ifndef USE_RTC
-#include "debugtimer.h"
-DebugTimer timer;
-#else
-#include "rtctimer.h"
 RTCTimer timer;
-#endif
-
-#ifndef ITERATOR
-#include "words.h"
 Words program(timer);
-#else
-#include "iterator.h"
-Iterator program(timer);
-#endif
+Ducks ducks(timer);
 
 void setup() {
   Serial.begin(9600);
 
   delay( 3000 ); // power-up safety delay
 
-  program.init();
+  timer.init();
   
   FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
   FastLED.setBrightness(  BRIGHTNESS );
 }
 
 void loop() {
+  timer.tick();
   program.update();
-  FastLED.show();
+  ducks.update();
 }

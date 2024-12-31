@@ -10,6 +10,7 @@ class Timer
         virtual bool tick() = 0;
         virtual uint8_t hour() = 0;
         virtual uint8_t minute() = 0;
+        virtual uint8_t second() = 0;
 };
 
 #endif

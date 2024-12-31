@@ -17,6 +17,7 @@ class RTCTimer : public Timer
         bool tick();
         uint8_t hour();
         uint8_t minute();
+        uint8_t second();
     private:
         DateTime previousNow;
 };
@@ -35,7 +36,7 @@ void RTCTimer::init()
 bool RTCTimer::tick()
 {
     DateTime now = rtc.now();
-    if (previousNow.minute() == now.minute()) return false;
+    if (previousNow.second() == now.second()) return false;
 
     previousNow = now;
     return true;
@@ -49,6 +50,11 @@ uint8_t RTCTimer::hour()
 uint8_t RTCTimer::minute()
 {
     return previousNow.minute();
+}
+
+uint8_t RTCTimer::second()
+{
+    return previousNow.second();
 }
 
 #endif
