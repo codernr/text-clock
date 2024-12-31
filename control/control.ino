@@ -2,28 +2,38 @@
 #include <FastLED.h>
 #include "RTClib.h"
 #include "config.h"
-#include "rtctimer.h"
 #include "words.h"
 #include "ducks.h"
 
 CRGB leds[NUM_LEDS];
-RTCTimer timer;
-Words program(timer);
-Ducks ducks(timer);
+RTC_DS3231 rtc;
 
-void setup() {
+Words words;
+Ducks ducks;
+
+void setup()
+{
   Serial.begin(9600);
 
-  delay( 3000 ); // power-up safety delay
+  delay(3000); // power-up safety delay
 
-  timer.init();
-  
-  FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
-  FastLED.setBrightness(  BRIGHTNESS );
+  initRtc();
+
+  FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
+  FastLED.setBrightness(BRIGHTNESS);
 }
 
-void loop() {
-  timer.tick();
-  program.update();
-  ducks.update();
+void initRtc()
+{
+  rtc.begin();
+  if (rtc.lostPower())
+  {
+    rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+  }
+}
+
+void loop()
+{
+  words.update(rtc.now());
+  ducks.update(rtc.now());
 }

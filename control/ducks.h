@@ -44,37 +44,36 @@ const uint8_t duck2_color4[] PROGMEM = {38, 58, 61, 81};
 
 class Ducks {
 public:
-    Ducks(Timer& timer);
-    void update();
+    Ducks();
+    void update(const DateTime now);
 
 private:
-    Timer& timer;
-    bool isSet;
+    uint8_t second;
     uint8_t duck;
     void setDuck0();
     void setDuck1();
     void setDuck2();
 };
 
-Ducks::Ducks(Timer& timer) : timer(timer), isSet(false), duck(0) {}
+Ducks::Ducks() {}
 
-void Ducks::update() {
-    if (timer.second() == 40 && !isSet) {
+void Ducks::update(const DateTime now) {
+    if (second == now.second()) return;
 
-        FastLED.clear();
+    second = now.second();
 
-        if (duck == 0) setDuck0();
-        if (duck == 1) setDuck1();
-        if (duck == 2) setDuck2();
+    if (second != 45) return;
 
-        FastLED.show();
+    FastLED.clear();
 
-        duck = (duck + 1) % 3;
-        isSet = true;
-    }
-    if (timer.second() == 41) {
-        isSet = false;
-    }
+    if (duck == 0) setDuck0();
+    if (duck == 1) setDuck1();
+    if (duck == 2) setDuck2();
+
+    FastLED.show();
+
+    duck = (duck + 1) % 3;
+    
 }
 
 void Ducks::setDuck0() {

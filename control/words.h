@@ -7,34 +7,32 @@
 #include "config.h"
 
 extern CRGB leds[NUM_LEDS];
-const CRGBPalette16 palette = RainbowColors_p;
-uint8_t paletteIndex = 0;
 
 class Words {
 public:
-    Words(Timer& timer);
-    void update();
+    Words();
+    void update(const DateTime now);
 
 private:
-    Timer& timer;
-    bool isSet;
+    uint8_t paletteIndex;
+    uint8_t minute;
     inline bool minuteActive(const uint8_t minute, const uint8_t m) __attribute__((always_inline));
     inline bool hourActive(const uint8_t hour, const uint8_t h, const uint8_t m) __attribute__((always_inline));
     void setPixels(const uint8_t h, const uint8_t m);
 };
 
-Words::Words(Timer& timer) : timer(timer), isSet(false) {}
+Words::Words() {}
 
-void Words::update() {
-    if (timer.second() == 0 && !isSet) {
-        paletteIndex++;
-        setPixels(timer.hour(), timer.minute());
-        FastLED.show();
-        isSet = true;
-    }
-    if (timer.second() == 1) {
-        isSet = false;
-    }
+void Words::update(const DateTime now) {
+    if (minute == now.minute()) return;
+
+    minute = now.minute();
+
+    FastLED.clear();
+    setPixels(now.hour(), minute);
+    FastLED.show();
+    
+    paletteIndex++;
 }
 
 void Words::setPixels(const uint8_t h, const uint8_t m) {
@@ -74,8 +72,6 @@ void Words::setPixels(const uint8_t h, const uint8_t m) {
             (i >=0 && i < 3 && ((h != 11 && h != 23 && m > 53) || (h != 0 && h != 12 && m < 8)))
         )
         leds[i].setHSV(paletteIndex, 255, 255);
-
-        else leds[i] = CRGB::Black;
     }
 }
 
