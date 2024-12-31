@@ -47,20 +47,27 @@ public:
 
 private:
     uint8_t second;
+    uint8_t hour;
+    uint8_t randomMinute;
     uint8_t duck;
     void setDuck0();
     void setDuck1();
     void setDuck2();
 };
 
-Ducks::Ducks() {}
+Ducks::Ducks() : second(61), hour(25) {}
 
 void Ducks::update(const DateTime now) {
     if (second == now.second()) return;
 
     second = now.second();
 
-    if (second != 45) return;
+    if (hour != now.hour()) {
+        hour = now.hour();
+        randomMinute = random(60);
+    }
+Serial.println(randomMinute);
+    if (!(now.minute() == randomMinute && second == 45)) return;
 
     FastLED.clear();
 
